@@ -77,13 +77,11 @@
     {% endblock %}
 
     {% block sw_category_detail_link_type_select_media %}
-    <sw-media-field
-        v-if="isMedia"
-        v-model:value="category.linkMediaId"
-        class="sw-category-link-settings__selection-media"
-        :disabled="!acl.can('category.editor') || undefined"
-        :label="$t('sw-category.base.link.labelLinkMedia')"
-    />
+    <template v-if="isMedia">
+        <sw-upload-listener :key="category.id + 'linkMediaUploadListener'" :upload-tag="category.id + 'linkMedia'" auto-upload @media-upload-finish="onLinkMediaSetItem" />
+        <sw-media-upload-v2 :key="category.id + 'linkMediaUpload'" :label="$t('sw-category.base.link.linkMediaLabel')" variant="regular" :disabled="!acl.can('category.editor') || undefined" :source="linkMediaItem" :upload-tag="category.id + 'linkMedia'" :allow-multi-select="false" :default-folder="category.getEntityName()" class="sw-category-link-settings__selection-media" @media-drop="onLinkMediaDropped" @media-upload-sidebar-open="showLinkMediaModal = true" @media-upload-remove-image="onLinkMediaRemoved" />
+        <sw-media-modal-v2 v-if="showLinkMediaModal" :allow-multi-select="false" :entity-context="category.getEntityName()" @media-modal-selection-change="onLinkMediaSelectionChange" @modal-close="showLinkMediaModal = false" />
+    </template>
     {% endblock %}
 
     {% block sw_category_detail_link_field %}

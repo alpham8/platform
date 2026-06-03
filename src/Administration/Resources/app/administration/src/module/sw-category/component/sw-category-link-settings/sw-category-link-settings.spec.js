@@ -34,7 +34,9 @@ async function createWrapper(category = {}) {
                 'sw-single-select': true,
                 'sw-entity-single-select': true,
                 'sw-category-tree-field': true,
-                'sw-media-field': true,
+                'sw-upload-listener': true,
+                'sw-media-upload-v2': true,
+                'sw-media-modal-v2': true,
             },
         },
         props: {
@@ -184,19 +186,21 @@ describe('src/module/sw-category/component/sw-category-link-settings', () => {
         expect(wrapper.vm.category.internalLink).toBe('someUuid');
     });
 
-    it('shows sw-media-field when linkType is media', async () => {
+    it('shows sw-media-upload-v2 when linkType is media', async () => {
         global.activeAclRoles = ['category.editor'];
 
         const wrapper = await createWrapper({
+            id: Shopware.Utils.createId(),
             linkType: 'media',
             linkMediaId: null,
             externalLink: null,
             internalLink: null,
             linkNewTab: false,
+            getEntityName: () => 'category',
         });
 
-        const mediaField = wrapper.find('sw-media-field-stub');
-        expect(mediaField.exists()).toBe(true);
+        const mediaUpload = wrapper.find('sw-media-upload-v2-stub');
+        expect(mediaUpload.exists()).toBe(true);
 
         const entitySelect = wrapper.find('.sw-category-link-settings__entity');
         expect(entitySelect.exists()).toBe(false);
@@ -209,11 +213,13 @@ describe('src/module/sw-category/component/sw-category-link-settings', () => {
         global.activeAclRoles = ['category.editor'];
 
         const wrapper = await createWrapper({
+            id: Shopware.Utils.createId(),
             linkType: 'media',
             linkMediaId: 'some-media-id',
             externalLink: null,
             internalLink: null,
             linkNewTab: false,
+            getEntityName: () => 'category',
         });
 
         await wrapper.getComponent('.sw-category-link-settings__type').vm.$emit('update:value', 'external');

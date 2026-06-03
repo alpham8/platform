@@ -123,7 +123,7 @@ class CategoryRoute extends AbstractCategoryRoute
         $criteria->setTitle('category::data');
 
         $criteria->addAssociation('media');
-        $criteria->addAssociation('translations');
+        $criteria->addAssociation('translations.linkMedia');
 
         $category = $this->categoryRepository->search($criteria, $context)->getEntities()->get($categoryId);
         if (!$category instanceof CategoryEntity) {

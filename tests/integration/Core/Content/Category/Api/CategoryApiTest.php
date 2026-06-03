@@ -80,8 +80,6 @@ class CategoryApiTest extends TestCase
 
         $response = $this->getBrowser()->getResponse();
         static::assertIsString($response->getContent());
-        // Shopware surfaces FK constraint violations as HTTP 500 (DB error) rather than 400 (validation).
-        // Once upstream adds explicit linkMediaId validation, this assertion should be tightened to assertSame(400, ...).
-        static::assertGreaterThanOrEqual(400, $response->getStatusCode());
+        static::assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode(), $response->getContent());
     }
 }

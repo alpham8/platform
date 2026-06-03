@@ -44,12 +44,23 @@ class CategoryUrlGenerator extends AbstractCategoryUrlGenerator
 
         switch ($linkType) {
             case CategoryDefinition::LINK_TYPE_MEDIA:
-                $media = $category->getLinkMedia();
-                if ($media === null) {
+                $linkMediaId = $category->getTranslation('linkMediaId');
+                if (!\is_string($linkMediaId)) {
                     return null;
                 }
 
-                return $media->getUrl();
+                $translations = $category->getTranslations();
+                if ($translations === null) {
+                    return null;
+                }
+
+                foreach ($translations as $translation) {
+                    if ($translation->getLinkMediaId() === $linkMediaId && $translation->getLinkMedia() !== null) {
+                        return $translation->getLinkMedia()->getUrl();
+                    }
+                }
+
+                return null;
 
             case CategoryDefinition::LINK_TYPE_PRODUCT:
                 /** @phpstan-ignore shopware.storefrontRouteUsage (Do not use Storefront routes in the core. Will be fixed with https://github.com/shopware/shopware/issues/12970) */

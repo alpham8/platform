@@ -69,7 +69,17 @@ class CategoryMediaLinkTest extends TestCase
         static::assertSame(CategoryDefinition::LINK_TYPE_MEDIA, $category->getLinkType());
         static::assertSame($mediaId, $category->getTranslation('linkMediaId'));
 
-        $linkMedia = $category->getLinkMedia();
+        $translations = $category->getTranslations();
+        static::assertNotNull($translations);
+
+        $linkMedia = null;
+        foreach ($translations as $translation) {
+            if ($translation->getLinkMediaId() === $mediaId) {
+                $linkMedia = $translation->getLinkMedia();
+                break;
+            }
+        }
+
         static::assertInstanceOf(MediaEntity::class, $linkMedia);
         static::assertSame($mediaId, $linkMedia->getId());
     }

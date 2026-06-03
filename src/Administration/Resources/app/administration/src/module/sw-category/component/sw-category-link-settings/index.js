@@ -32,6 +32,7 @@ export default {
         return {
             categoriesCollection: [],
             linkHasProtocol: false,
+            showLinkMediaModal: false,
         };
     },
 
@@ -130,6 +131,23 @@ export default {
             return this.repositoryFactory.create('category');
         },
 
+        mediaRepository() {
+            return this.repositoryFactory.create('media');
+        },
+
+        linkMediaItem() {
+            const translations = this.category.translations;
+            if (translations) {
+                const translation = Object.values(translations).find((t) => t.linkMediaId === this.category.linkMediaId);
+
+                if (translation?.linkMedia) {
+                    return translation.linkMedia;
+                }
+            }
+
+            return null;
+        },
+
         categoryLinkPlaceholder() {
             return this.category.internalLink ? '' : this.$t('sw-category.base.link.categoryPlaceholder');
         },
@@ -183,6 +201,47 @@ export default {
 
         onSelectionRemove() {
             this.category.internalLink = null;
+        },
+
+        onLinkMediaSelectionChange(mediaItems) {
+            const media = mediaItems[0];
+            if (!media) {
+                return;
+            }
+
+            this.mediaRepository.get(media.id).then((updatedMedia) => {
+                this.category.linkMediaId = updatedMedia.id;
+                this.setLinkMediaOnTranslation(updatedMedia);
+            });
+        },
+
+        onLinkMediaSetItem({ targetId }) {
+            this.mediaRepository.get(targetId).then((updatedMedia) => {
+                this.category.linkMediaId = targetId;
+                this.setLinkMediaOnTranslation(updatedMedia);
+            });
+        },
+
+        onLinkMediaRemoved() {
+            this.category.linkMediaId = null;
+            this.setLinkMediaOnTranslation(null);
+        },
+
+        onLinkMediaDropped(dropItem) {
+            this.onLinkMediaSetItem({ targetId: dropItem.id });
+        },
+
+        setLinkMediaOnTranslation(media) {
+            const translations = this.category.translations;
+            if (translations) {
+                const languageId = Shopware.Context.api.languageId;
+                const translation = Object.values(translations).find((t) => t.languageId === languageId);
+
+                if (translation) {
+                    translation.linkMediaId = media?.id ?? null;
+                    translation.linkMedia = media;
+                }
+            }
         },
     },
 };

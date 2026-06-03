@@ -217,7 +217,7 @@ export default {
                 .addAssociation('navigationSalesChannels.homeCmsPage.previewMedia')
                 .addAssociation('serviceSalesChannels')
                 .addAssociation('footerSalesChannels')
-                .addAssociation('translations');
+                .addAssociation('translations.linkMedia');
 
             return criteria;
         },

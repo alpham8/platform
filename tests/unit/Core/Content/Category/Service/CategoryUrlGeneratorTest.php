@@ -131,7 +131,7 @@ class CategoryUrlGeneratorTest extends TestCase
         $category = new CategoryEntity();
         $category->setType(CategoryDefinition::TYPE_LINK);
         $category->addTranslated('linkType', CategoryDefinition::LINK_TYPE_MEDIA);
-        $category->setLinkMediaId($mediaId);
+        $category->addTranslated('linkMediaId', $mediaId);
         $category->setTranslations(new CategoryTranslationCollection([$translation]));
 
         static::assertSame($mediaUrl, $this->urlGenerator->generate($category, $this->salesChannel));

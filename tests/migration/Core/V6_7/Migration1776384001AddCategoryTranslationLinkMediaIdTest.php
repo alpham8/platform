@@ -45,10 +45,10 @@ class Migration1776384001AddCategoryTranslationLinkMediaIdTest extends TestCase
 
     private function revertMigration(Connection $connection): void
     {
-        $connection->executeStatement(
-            'ALTER TABLE `category_translation`'
-            . ' DROP FOREIGN KEY `fk.category_translation.link_media_id`,'
-            . ' DROP COLUMN `link_media_id`'
-        );
+        $connection->executeStatement(<<<'SQL'
+            ALTER TABLE `category_translation`
+            DROP FOREIGN KEY `fk.category_translation.link_media_id`,
+            DROP COLUMN `link_media_id`;
+        SQL);
     }
 }
